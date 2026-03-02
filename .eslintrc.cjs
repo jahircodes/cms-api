@@ -1,0 +1,21 @@
+module.exports = {
+  env: {
+    node: true,
+    es2021: true,
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:import/recommended',
+    'plugin:node/recommended',
+    'prettier',
+  ],
+  parserOptions: {
+    ecmaVersion: 12,
+    sourceType: 'script',
+  },
+  rules: {
+    'node/no-unsupported-features/es-syntax': 'off',
+    'node/no-missing-import': 'off',
+    'import/no-unresolved': 'off',
+  },
+};

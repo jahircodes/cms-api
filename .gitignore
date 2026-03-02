@@ -1,0 +1,9 @@
+node_modules
+.env
+npm-debug.log
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+.prisma
+.DS_Store
+.vscode/
