@@ -44,7 +44,7 @@ model Role {
   updatedAt  DateTime    @updatedAt
 
   @@index([roleKey])
-  @@map("roles")
+  @@map("role")
 }
 
 model User {
@@ -70,7 +70,7 @@ model User {
 
   @@index([email])
   @@index([roleId])
-  @@map("users")
+  @@map("user")
 }
 
 model Category {
@@ -85,7 +85,7 @@ model Category {
   updatedAt DateTime        @updatedAt
 
   @@index([slug])
-  @@map("categories")
+  @@map("category")
 }
 
 model Post {
@@ -109,7 +109,7 @@ model Post {
   @@index([userId])
   @@index([slug])
   @@index([status])
-  @@map("posts")
+  @@map("post")
 }
 
 model Page {
@@ -128,5 +128,5 @@ model Page {
   @@index([slug])
   @@index([userId])
   @@index([status])
-  @@map("pages")
+  @@map("page")
 }
