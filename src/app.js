@@ -34,6 +34,14 @@ const { createRoleRepository } = require('./modules/role/role.repository');
 const { createRoleService } = require('./modules/role/role.service');
 const { buildRoleController } = require('./modules/role/role.controller');
 const { buildRoleRouter } = require('./modules/role/role.routes');
+const { createPostRepository } = require('./modules/post/post.repository');
+const { createPostService } = require('./modules/post/post.service');
+const { buildPostController } = require('./modules/post/post.controller');
+const { buildPostRouter } = require('./modules/post/post.routes');
+const { createPageRepository } = require('./modules/page/page.repository');
+const { createPageService } = require('./modules/page/page.service');
+const { buildPageController } = require('./modules/page/page.controller');
+const { buildPageRouter } = require('./modules/page/page.routes');
 
 const app = express();
 
@@ -54,6 +62,14 @@ const roleRepository = createRoleRepository({ prisma });
 const roleService = createRoleService({ roleRepository });
 const roleController = buildRoleController({ roleService });
 const roleRoutes = buildRoleRouter({ roleController });
+const postRepository = createPostRepository({ prisma });
+const postService = createPostService({ postRepository });
+const postController = buildPostController({ postService });
+const postRoutes = buildPostRouter({ postController });
+const pageRepository = createPageRepository({ prisma });
+const pageService = createPageService({ pageRepository });
+const pageController = buildPageController({ pageService });
+const pageRoutes = buildPageRouter({ pageController });
 
 app.use(helmet());
 app.use(cors());
@@ -90,6 +106,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', authMiddleware, userRoutes);
 app.use('/api/categories', authMiddleware, categoryRoutes);
 app.use('/api/roles', authMiddleware, roleRoutes);
+app.use('/api/posts', authMiddleware, postRoutes);
+app.use('/api/pages', authMiddleware, pageRoutes);
 
 app.use((req, res, next) => {
   next(new ApiError('Route not found', 404));
