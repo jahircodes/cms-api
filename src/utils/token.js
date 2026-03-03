@@ -1,3 +1,10 @@
+/**
+ * Token Utilities
+ * ---------------
+ * Provides JWT token creation and payload building.
+ * Uses dependency injection for flexible token configuration.
+ */
+
 const jwt = require('jsonwebtoken');
 const { loadEnv } = require('../config/env');
 

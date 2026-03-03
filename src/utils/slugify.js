@@ -1,4 +1,9 @@
-// utils/slugify.js
+/**
+ * Slugify Utility
+ * ---------------
+ * Generates SEO-friendly URL slugs from text.
+ * Handles normalization, special characters, and smart truncation.
+ */
 
 /**
  * Generate an SEO-friendly slug.

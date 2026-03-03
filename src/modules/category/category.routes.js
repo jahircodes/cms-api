@@ -1,3 +1,10 @@
+/**
+ * Category Router
+ * ---------------
+ * Defines category management routes with validation middleware.
+ * No business or database logic here.
+ */
+
 const { Router } = require('express');
 const { validate, createCategorySchema, updateCategorySchema } = require('./category.validator');
 

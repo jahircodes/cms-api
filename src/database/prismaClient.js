@@ -1,3 +1,10 @@
+/**
+ * Prisma Client
+ * -------------
+ * Provides singleton Prisma client for database access.
+ * Supports dependency injection with isolated clients for testing.
+ */
+
 const { PrismaClient } = require('@prisma/client');
 const { loadEnv } = require('../config/env');
 

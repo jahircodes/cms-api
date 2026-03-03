@@ -1,3 +1,10 @@
+/**
+ * Retry Utility
+ * -------------
+ * Provides exponential backoff retry logic for transient failures.
+ * Useful for database operations and external API calls.
+ */
+
 const retry = async (fn, { retries = 3, delayMs = 200, factor = 2 } = {}) => {
   let attempt = 0;
   let lastError;

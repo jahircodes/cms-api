@@ -1,3 +1,10 @@
+/**
+ * Base Repository
+ * ---------------
+ * Provides reusable CRUD operations for Prisma models.
+ * Abstracts common database patterns to reduce code duplication.
+ */
+
 const createBaseRepository = ({ prisma, model }) => {
   const delegate = prisma[model];
 

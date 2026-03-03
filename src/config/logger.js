@@ -1,3 +1,10 @@
+/**
+ * Logger Configuration
+ * --------------------
+ * Configures Pino logger for structured logging.
+ * Uses pretty printing in development for readability.
+ */
+
 const pino = require('pino');
 const { loadEnv } = require('./env');
 

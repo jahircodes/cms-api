@@ -1,3 +1,10 @@
+/**
+ * Express Application
+ * -------------------
+ * Main application setup with dependency injection.
+ * Configures middleware, routes, and error handling.
+ */
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');

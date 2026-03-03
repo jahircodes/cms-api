@@ -1,17 +1,25 @@
+/**
+ * Category Service
+ * ----------------
+ * Handles category-related business logic.
+ * Uses dependency injection for decoupling and testability.
+ * Does NOT handle HTTP or database access directly.
+ */
+
 const slugify = require('../../utils/slugify');
 const { ApiError } = require('../../shared/ApiError');
 
 const createCategoryService = ({ categoryRepository }) => {
-  const createCategory = async (payload) => {
-    const slug = slugify(payload.name);
+  const createCategory = async ({ name, status }) => {
+    const slug = slugify(name);
     const existing = await categoryRepository.findBySlug(slug);
     if (existing) {
       throw new ApiError('Category with this name already exists', 409);
     }
     const category = await categoryRepository.create({
-      name: payload.name,
+      name,
       slug,
-      status: payload.status || 'ACTIVE',
+      status: status || 'ACTIVE',
     });
     return category;
   };
@@ -28,17 +36,20 @@ const createCategoryService = ({ categoryRepository }) => {
     return category;
   };
 
-  const updateCategory = async (id, payload) => {
+  const updateCategory = async (id, { name, status }) => {
     const existing = await categoryRepository.findById(id);
     if (!existing) {
       throw new ApiError('Category not found', 404);
     }
-    const slug = slugify(payload.name);
-    const category = await categoryRepository.update(id, {
-      name: payload.name,
-      slug,
-      status: payload.status,
-    });
+    const slug = slugify(name);
+    const category = await categoryRepository.update(
+      { id },
+      {
+        name,
+        slug,
+        status,
+      }
+    );
     return category;
   };
 
@@ -47,7 +58,7 @@ const createCategoryService = ({ categoryRepository }) => {
     if (!existing) {
       throw new ApiError('Category not found', 404);
     }
-    await categoryRepository.delete(id);
+    await categoryRepository.delete({ id });
     return { id };
   };
 

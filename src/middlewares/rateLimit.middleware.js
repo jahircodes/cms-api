@@ -1,3 +1,10 @@
+/**
+ * Rate Limit Middleware
+ * ---------------------
+ * Protects API endpoints from abuse and DDoS attacks.
+ * Configured via environment variables.
+ */
+
 const rateLimit = require('express-rate-limit');
 const { loadEnv } = require('../config/env');
 

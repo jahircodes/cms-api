@@ -1,3 +1,10 @@
+/**
+ * Environment Configuration
+ * -------------------------
+ * Loads and validates environment variables.
+ * Provides typed access to configuration values.
+ */
+
 const dotenv = require('dotenv');
 
 dotenv.config();

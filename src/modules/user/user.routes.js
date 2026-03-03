@@ -1,3 +1,10 @@
+/**
+ * User Router
+ * -----------
+ * Defines user management routes with validation middleware.
+ * No business or database logic here.
+ */
+
 const { Router } = require('express');
 const { validate, updateUserSchema } = require('./user.validator');
 

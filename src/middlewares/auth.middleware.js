@@ -1,3 +1,10 @@
+/**
+ * Auth Middleware
+ * ---------------
+ * JWT-based authentication middleware.
+ * Validates Bearer tokens and attaches user info to request.
+ */
+
 const jwt = require('jsonwebtoken');
 const { loadEnv } = require('../config/env');
 const { ApiError } = require('../shared/ApiError');

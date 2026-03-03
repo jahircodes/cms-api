@@ -1,3 +1,11 @@
+/**
+ * User Service
+ * ------------
+ * Handles user-related business logic.
+ * Uses dependency injection for decoupling and testability.
+ * Does NOT handle HTTP or database access directly.
+ */
+
 const { ApiError } = require('../../shared/ApiError');
 
 const createUserService = ({ userRepository }) => {

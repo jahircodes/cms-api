@@ -1,3 +1,10 @@
+/**
+ * Error Handler Middleware
+ * ------------------------
+ * Centralized error handling for the application.
+ * Prevents internal error details from leaking to clients.
+ */
+
 const { ApiError } = require('../shared/ApiError');
 
 // eslint-disable-next-line no-unused-vars

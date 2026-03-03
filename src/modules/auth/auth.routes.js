@@ -1,3 +1,10 @@
+/**
+ * Auth Router
+ * -----------
+ * Defines authentication routes with validation middleware.
+ * No business or database logic here.
+ */
+
 const { Router } = require('express');
 const { validate, registerSchema, loginSchema } = require('./auth.validator');
 const router = Router();
