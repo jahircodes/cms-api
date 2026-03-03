@@ -35,7 +35,7 @@
     "pino-pretty": "latest"
   },
   "devDependencies": {
-    "@prisma/client": "^7.4.2",
+    "@prisma/client": "6.19.2",
     "@prisma/config": "latest",
     "eslint": "latest",
     "eslint-config-prettier": "latest",
@@ -43,6 +43,6 @@
     "eslint-plugin-node": "latest",
     "nodemon": "latest",
     "prettier": "latest",
-    "prisma": "^7.4.2"
+    "prisma": "6.19.2"
   }
 }
