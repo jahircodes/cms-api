@@ -1,11 +1,14 @@
-const express = require('express');
-const controller = require('./category.controller');
-const router = express.Router();
+const { Router } = require('express');
+const { validate, createCategorySchema, updateCategorySchema } = require('./category.validator');
+const router = Router();
 
-router.post('/', controller.createCategory);
-router.get('/', controller.getCategories);
-router.get('/:id', controller.getCategoryById);
-router.put('/:id', controller.updateCategory);
-router.delete('/:id', controller.deleteCategory);
+const buildCategoryRouter = ({ categoryController }) => {
+  router.post('/', validate(createCategorySchema), categoryController.createCategory);
+  router.get('/', categoryController.getCategories);
+  router.get('/:id', categoryController.getCategoryById);
+  router.put('/:id', validate(updateCategorySchema), categoryController.updateCategory);
+  router.delete('/:id', categoryController.deleteCategory);
+  return router;
+};
 
-module.exports = router;
+module.exports = { buildCategoryRouter };
