@@ -4,6 +4,7 @@ const createBaseRepository = ({ prisma, model }) => {
   // --- READ ---
   const findUnique = (where, options = {}) => delegate.findUnique({ where, ...options });
   const findById = (id, options = {}) => findUnique({ id }, options);
+  const findOne = (where = {}, options = {}) => delegate.findFirst({ where, ...options });
   const findFirst = (where = {}, options = {}) => delegate.findFirst({ where, ...options });
   const findMany = (where = {}, options = {}) => delegate.findMany({ where, ...options });
 
@@ -34,6 +35,7 @@ const createBaseRepository = ({ prisma, model }) => {
     // READ
     findUnique,
     findById,
+    findOne,
     findFirst,
     findMany,
 

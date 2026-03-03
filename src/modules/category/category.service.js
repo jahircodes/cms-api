@@ -48,7 +48,7 @@ const createCategoryService = ({ categoryRepository }) => {
       throw new ApiError('Category not found', 404);
     }
     await categoryRepository.delete(id);
-    return { success: true };
+    return { id };
   };
 
   return {
