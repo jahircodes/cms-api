@@ -24,6 +24,16 @@ const updateUserSchema = Joi.object({
   email: Joi.string().email().optional(),
 });
 
+const changePasswordSchema = Joi.object({
+  currentPassword: Joi.string().required().messages({
+    'any.required': 'Current password is required',
+  }),
+  newPassword: Joi.string().min(8).max(128).required().messages({
+    'string.min': 'New password must be at least 8 characters',
+    'any.required': 'New password is required',
+  }),
+});
+
 const validate = (schema) => (req, res, next) => {
   const { error, value } = schema.validate(req.body, { abortEarly: false, stripUnknown: true });
   if (error) {
@@ -33,4 +43,4 @@ const validate = (schema) => (req, res, next) => {
   return next();
 };
 
-module.exports = { validate, createUserSchema, updateUserSchema };
+module.exports = { validate, createUserSchema, updateUserSchema, changePasswordSchema };

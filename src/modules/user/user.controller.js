@@ -58,7 +58,18 @@ const buildUserController = ({ userService }) => {
     }
   };
 
-  return { createUser, getUsers, getUser, updateUser, deleteUser };
+  const changePassword = async (req, res, next) => {
+    try {
+      const userId = req.user.sub;
+      const { currentPassword, newPassword } = req.body;
+      const result = await userService.changePassword(userId, { currentPassword, newPassword });
+      return sendSuccess(res, result, 'Password changed successfully');
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  return { createUser, getUsers, getUser, updateUser, deleteUser, changePassword };
 };
 
 module.exports = { buildUserController };

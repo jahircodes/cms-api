@@ -7,7 +7,7 @@
  */
 
 const { ApiError } = require('../../shared/ApiError');
-const { hashPassword } = require('../../utils/hash');
+const { hashPassword, comparePassword } = require('../../utils/hash');
 
 const createUserService = ({ userRepository, roleRepository }) => {
   const safeUserSelect = { id: true, name: true, email: true, roleId: true, createdAt: true };
@@ -63,7 +63,27 @@ const createUserService = ({ userRepository, roleRepository }) => {
     return { id };
   };
 
-  return { createUser, getUsers, getUser, updateUser, deleteUser };
+  const changePassword = async (userId, { currentPassword, newPassword }) => {
+    // Fetch user with password field for verification
+    const user = await userRepository.findById(userId, { select: { id: true, password: true } });
+    if (!user) {
+      throw new ApiError('User not found', 404);
+    }
+
+    // Verify current password
+    const isValidPassword = await comparePassword(currentPassword, user.password);
+    if (!isValidPassword) {
+      throw new ApiError('Current password is incorrect', 401);
+    }
+
+    // Hash new password and update
+    const hashedPassword = await hashPassword(newPassword);
+    await userRepository.update({ id: userId }, { password: hashedPassword });
+
+    return { message: 'Password changed successfully' };
+  };
+
+  return { createUser, getUsers, getUser, updateUser, deleteUser, changePassword };
 };
 
 module.exports = { createUserService };
