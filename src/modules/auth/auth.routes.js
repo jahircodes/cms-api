@@ -3,14 +3,14 @@
  * -----------
  * Defines authentication routes with validation middleware.
  * No business or database logic here.
+ * Note: User registration is admin-managed via POST /api/users
  */
 
 const { Router } = require('express');
-const { validate, registerSchema, loginSchema } = require('./auth.validator');
+const { validate, loginSchema } = require('./auth.validator');
 const router = Router();
 
 const buildAuthRouter = ({ authController }) => {
-  router.post('/register', validate(registerSchema), authController.register);
   router.post('/login', validate(loginSchema), authController.login);
 
   return router;
