@@ -30,6 +30,10 @@ const { createCategoryRepository } = require('./modules/category/category.reposi
 const { createCategoryService } = require('./modules/category/category.service');
 const { buildCategoryController } = require('./modules/category/category.controller');
 const { buildCategoryRouter } = require('./modules/category/category.routes');
+const { createRoleRepository } = require('./modules/role/role.repository');
+const { createRoleService } = require('./modules/role/role.service');
+const { buildRoleController } = require('./modules/role/role.controller');
+const { buildRoleRouter } = require('./modules/role/role.routes');
 
 const app = express();
 
@@ -46,6 +50,10 @@ const categoryRepository = createCategoryRepository({ prisma });
 const categoryService = createCategoryService({ categoryRepository });
 const categoryController = buildCategoryController({ categoryService });
 const categoryRoutes = buildCategoryRouter({ categoryController });
+const roleRepository = createRoleRepository({ prisma });
+const roleService = createRoleService({ roleRepository });
+const roleController = buildRoleController({ roleService });
+const roleRoutes = buildRoleRouter({ roleController });
 
 app.use(helmet());
 app.use(cors());
@@ -81,6 +89,7 @@ app.get('/api', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', authMiddleware, userRoutes);
 app.use('/api/categories', authMiddleware, categoryRoutes);
+app.use('/api/roles', authMiddleware, roleRoutes);
 
 app.use((req, res, next) => {
   next(new ApiError('Route not found', 404));
