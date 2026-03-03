@@ -1,4 +1,4 @@
-Follow Clean Architecture with Dependency Injection and Factory Pattern.
+Follow Clean Architecture using Dependency Injection and Factory Pattern.
 
 Tech Stack:
 
@@ -7,51 +7,55 @@ Tech Stack:
 - Prisma ORM
 - Joi validation
 
-Architecture Rules:
+---
+
+## ARCHITECTURE RULES
 
 1. Repository Layer:
 
 - Use factory function: create<Entity>Repository({ prisma })
-- Extend BaseRepository where applicable
+- Extend BaseRepository when applicable
 - Contain ONLY database logic
 - No business logic
 - No HTTP logic
 - No Express usage
-- No direct response handling
+- No response formatting
 
 2. Service Layer:
 
 - Use factory function: create<Entity>Service({ entityRepository })
 - Inject repository via dependency injection
 - Contain ONLY business logic
-- Throw ApiError for all operational errors
+- Throw ApiError for operational errors
 - Never use Prisma directly
 - Never use Express (req, res)
-- Keep logic clean and testable
+- Keep logic testable and clean
 
 3. Controller Layer:
 
 - Use builder function: build<Entity>Controller({ entityService })
 - Handle ONLY HTTP logic (req, res)
-- Use sendSuccess() for all successful responses
-- Do not implement business logic
-- Do not access database directly
+- Use sendSuccess() for successful responses
+- No business logic
+- No database access
 
 4. Router Layer:
 
 - Use builder function: build<Entity>Router({ entityController })
 - Apply Joi validation middleware
 - No business logic
-- No database access
+- No database logic
 
 5. Error Handling:
 
 - Use centralized ApiError class
 - Use global errorHandler middleware
 - Do not expose internal errors
-- Use consistent error response structure
+- Maintain consistent error structure
 
-6. Code Quality Standards:
+---
+
+## CODE QUALITY STANDARDS
 
 - Use async/await
 - Use early returns
@@ -59,17 +63,54 @@ Architecture Rules:
 - Follow SOLID principles
 - Avoid duplication
 - Use clear, descriptive naming
+- No commented-out code
+- No console.log in production
 - Write scalable, modular, maintainable code
-- No commented-out dead code
-- No console.log in production code
 
-7. Professional Commenting Standards:
+---
+
+## DESTRUCTURING STANDARDS (MANDATORY)
+
+1. Always destructure dependencies in factory functions:
+
+Correct:
+createUserService({ userRepository })
+
+Incorrect:
+createUserService(dependencies)
+
+2. Destructure request data in controllers:
+
+Correct:
+const { name, email } = req.body
+const { id } = req.params
+const { page, limit } = req.query
+
+Do NOT use:
+req.body.name
+req.params.id
+
+3. Destructure service payloads early:
+
+Correct:
+async function register({ email, password }) {}
+
+4. Destructure Prisma models when appropriate:
+
+Correct:
+const { user } = prisma
+
+5. Avoid over-destructuring deeply nested objects if it reduces readability.
+
+---
+
+## PROFESSIONAL COMMENTING STANDARDS
 
 - Do NOT comment obvious code.
-- Do NOT explain what the code does line-by-line.
+- Do NOT explain what code does line-by-line.
 - Comment WHY something exists, not WHAT it does.
 - Add a top-level file description for each module.
-- Use JSDoc for all public functions and factory builders.
+- Use JSDoc for public functions and factory builders.
 - Add comments only for:
   - Complex business logic
   - Security decisions
@@ -80,22 +121,14 @@ Example file header:
 
 /\*\*
 
-- Auth Service
+- User Service
 - ***
-- Handles authentication business logic.
-- Uses dependency injection for testability.
-- Does NOT handle HTTP or direct database access.
+- Handles user-related business logic.
+- Uses dependency injection for decoupling and testability.
+- Does NOT handle HTTP or database access directly.
   \*/
 
-Example factory documentation:
-
-/\*\*
-
-- Factory function for Auth Service.
-- Injects dependencies to keep module decoupled and testable.
-  \*/
-
-Example business logic comment:
+Example business comment:
 
 // Prevent user enumeration attack by returning generic error
 
@@ -106,4 +139,6 @@ Do NOT write unnecessary comments like:
 - "Return response"
 - "Loop through array"
 
-Write clean, production-ready, enterprise-level code.
+---
+
+Generate clean, production-ready, enterprise-level code.
