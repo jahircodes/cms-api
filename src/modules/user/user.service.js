@@ -7,9 +7,39 @@
  */
 
 const { ApiError } = require('../../shared/ApiError');
+const { hashPassword } = require('../../utils/hash');
 
-const createUserService = ({ userRepository }) => {
-  const safeUserSelect = { id: true, email: true, createdAt: true };
+const createUserService = ({ userRepository, roleRepository }) => {
+  const safeUserSelect = { id: true, name: true, email: true, roleId: true, createdAt: true };
+
+  const createUser = async ({ name, email, password, roleId }) => {
+    // Validate role exists
+    const role = await roleRepository.findById(roleId);
+    if (!role) {
+      throw new ApiError('Role not found', 404);
+    }
+
+    // Check if email already exists
+    const existingUser = await userRepository.findFirst({ email });
+    if (existingUser) {
+      throw new ApiError('Email already in use', 409);
+    }
+
+    // Hash password before storing
+    const hashedPassword = await hashPassword(password);
+
+    const user = await userRepository.create(
+      {
+        name,
+        email,
+        password: hashedPassword,
+        roleId,
+      },
+      { select: safeUserSelect }
+    );
+
+    return user;
+  };
 
   const getUsers = () => userRepository.findMany({}, { select: safeUserSelect });
 
@@ -33,7 +63,7 @@ const createUserService = ({ userRepository }) => {
     return { id };
   };
 
-  return { getUsers, getUser, updateUser, deleteUser };
+  return { createUser, getUsers, getUser, updateUser, deleteUser };
 };
 
 module.exports = { createUserService };
