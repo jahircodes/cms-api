@@ -85,12 +85,38 @@ const createPageService = ({ pageRepository }) => {
     return { id };
   };
 
+  const searchPages = async ({ query, status, page, limit, sortBy, sortOrder }) => {
+    const { data, total } = await pageRepository.search({
+      query,
+      status,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    };
+  };
+
   return {
     createPage,
     getPages,
     getPageById,
     updatePage,
     deletePage,
+    searchPages,
   };
 };
 

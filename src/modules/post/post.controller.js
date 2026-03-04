@@ -58,12 +58,31 @@ const buildPostController = ({ postService }) => {
     }
   };
 
+  const searchPosts = async (req, res, next) => {
+    try {
+      const { q, status, categoryId, page, limit, sortBy, sortOrder } = req.query;
+      const result = await postService.searchPosts({
+        query: q,
+        status,
+        categoryId,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      });
+      return sendSuccess(res, result, 'Posts retrieved');
+    } catch (err) {
+      next(err);
+    }
+  };
+
   return {
     createPost,
     getPosts,
     getPostById,
     updatePost,
     deletePost,
+    searchPosts,
   };
 };
 

@@ -6,11 +6,18 @@
  */
 
 const { Router } = require('express');
-const { validate, createPostSchema, updatePostSchema } = require('./post.validator');
+const {
+  validate,
+  validateQuery,
+  createPostSchema,
+  updatePostSchema,
+  searchQuerySchema,
+} = require('./post.validator');
 
 const buildPostRouter = ({ postController }) => {
   const router = Router();
 
+  router.get('/search', validateQuery(searchQuerySchema), postController.searchPosts);
   router.post('/', validate(createPostSchema), postController.createPost);
   router.get('/', postController.getPosts);
   router.get('/:id', postController.getPostById);

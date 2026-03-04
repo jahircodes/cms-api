@@ -58,12 +58,30 @@ const buildPageController = ({ pageService }) => {
     }
   };
 
+  const searchPages = async (req, res, next) => {
+    try {
+      const { q, status, page, limit, sortBy, sortOrder } = req.query;
+      const result = await pageService.searchPages({
+        query: q,
+        status,
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      });
+      return sendSuccess(res, result, 'Pages retrieved');
+    } catch (err) {
+      next(err);
+    }
+  };
+
   return {
     createPage,
     getPages,
     getPageById,
     updatePage,
     deletePage,
+    searchPages,
   };
 };
 

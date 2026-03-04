@@ -93,12 +93,39 @@ const createPostService = ({ postRepository }) => {
     return { id };
   };
 
+  const searchPosts = async ({ query, status, categoryId, page, limit, sortBy, sortOrder }) => {
+    const { data, total } = await postRepository.search({
+      query,
+      status,
+      categoryId,
+      page,
+      limit,
+      sortBy,
+      sortOrder,
+    });
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1,
+      },
+    };
+  };
+
   return {
     createPost,
     getPosts,
     getPostById,
     updatePost,
     deletePost,
+    searchPosts,
   };
 };
 
