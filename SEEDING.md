@@ -34,7 +34,6 @@ npm run seed
 
 ### Roles
 
-- **SUPER_ADMIN** - Full system access
 - **ADMIN** - Manage users, all content
 - **EDITOR** - Edit all posts, manage categories
 - **AUTHOR** - Create/edit own posts
