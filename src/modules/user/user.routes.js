@@ -7,6 +7,7 @@
 
 const { Router } = require('express');
 const { requireRole } = require('../../middlewares/authorize.middleware');
+const { USER_ROLES } = require('../../constants/roles');
 const {
   validate,
   adminCreateUserSchema,
@@ -19,7 +20,7 @@ const buildUserRouter = ({ userController }) => {
 
   router.post(
     '/admin/create',
-    requireRole('ADMIN'),
+    requireRole(USER_ROLES.ADMIN),
     validate(adminCreateUserSchema),
     userController.adminCreateUser
   );

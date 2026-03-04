@@ -7,15 +7,16 @@
 
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const { USER_ROLES } = require('../src/constants/roles');
 require('dotenv/config');
 
 const prisma = new PrismaClient();
 
 const roles = [
-  { name: 'Admin', roleKey: 'ADMIN' },
-  { name: 'Editor', roleKey: 'EDITOR' },
-  { name: 'Author', roleKey: 'AUTHOR' },
-  { name: 'Subscriber', roleKey: 'SUBSCRIBER' },
+  { name: 'Admin', roleKey: USER_ROLES.ADMIN },
+  { name: 'Editor', roleKey: USER_ROLES.EDITOR },
+  { name: 'Author', roleKey: USER_ROLES.AUTHOR },
+  { name: 'Subscriber', roleKey: USER_ROLES.SUBSCRIBER },
 ];
 
 async function main() {
@@ -34,7 +35,7 @@ async function main() {
 
   // Get ADMIN role
   const adminRole = await prisma.role.findUnique({
-    where: { roleKey: 'ADMIN' },
+    where: { roleKey: USER_ROLES.ADMIN },
   });
 
   // Seed admin user
