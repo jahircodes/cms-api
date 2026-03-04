@@ -8,15 +8,15 @@
 const Joi = require('joi');
 const { ApiError } = require('../../shared/ApiError');
 
-const createUserSchema = Joi.object({
+const adminCreateUserSchema = Joi.object({
   name: Joi.string().trim().min(2).max(100).required(),
   email: Joi.string().email().required(),
   password: Joi.string().min(8).max(128).required().messages({
     'string.min': 'Password must be at least 8 characters',
   }),
-  roleId: Joi.number().integer().positive().required().messages({
-    'number.base': 'Role ID must be a number',
-    'number.positive': 'Role ID must be a positive number',
+  roleKey: Joi.string().trim().uppercase().required().messages({
+    'string.base': 'Role key must be a string',
+    'any.required': 'Role key is required',
   }),
 });
 
@@ -43,4 +43,9 @@ const validate = (schema) => (req, res, next) => {
   return next();
 };
 
-module.exports = { validate, createUserSchema, updateUserSchema, changePasswordSchema };
+module.exports = {
+  validate,
+  adminCreateUserSchema,
+  updateUserSchema,
+  changePasswordSchema,
+};

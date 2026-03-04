@@ -27,7 +27,9 @@ const createAuthService = ({ authRepository, signToken = getDefaultTokenSigner()
   };
 
   const login = async ({ email, password }) => {
-    const user = await authRepository.findByEmail(email);
+    const user = await authRepository.findByEmail(email, {
+      include: { role: { select: { roleKey: true } } },
+    });
     if (!user) {
       // Prevent user enumeration attack by returning generic error
       throw new ApiError('Invalid credentials', 401);

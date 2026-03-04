@@ -6,9 +6,10 @@
  */
 
 const { Router } = require('express');
+const { requireRole } = require('../../middlewares/authorize.middleware');
 const {
   validate,
-  createUserSchema,
+  adminCreateUserSchema,
   updateUserSchema,
   changePasswordSchema,
 } = require('./user.validator');
@@ -16,7 +17,12 @@ const {
 const buildUserRouter = ({ userController }) => {
   const router = Router();
 
-  router.post('/', validate(createUserSchema), userController.createUser);
+  router.post(
+    '/admin/create',
+    requireRole('ADMIN'),
+    validate(adminCreateUserSchema),
+    userController.adminCreateUser
+  );
   router.patch('/change-password', validate(changePasswordSchema), userController.changePassword);
   router.get('/', userController.getUsers);
   router.get('/:id', userController.getUser);

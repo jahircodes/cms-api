@@ -8,10 +8,10 @@
 const { sendSuccess } = require('../../utils/response');
 
 const buildUserController = ({ userService }) => {
-  const createUser = async (req, res, next) => {
+  const adminCreateUser = async (req, res, next) => {
     try {
-      const { name, email, password, roleId } = req.body;
-      const user = await userService.createUser({ name, email, password, roleId });
+      const { name, email, password, roleKey } = req.body;
+      const user = await userService.createUserByRoleKey({ name, email, password, roleKey });
       return sendSuccess(res, user, 'User created successfully', 201);
     } catch (err) {
       next(err);
@@ -69,7 +69,7 @@ const buildUserController = ({ userService }) => {
     }
   };
 
-  return { createUser, getUsers, getUser, updateUser, deleteUser, changePassword };
+  return { adminCreateUser, getUsers, getUser, updateUser, deleteUser, changePassword };
 };
 
 module.exports = { buildUserController };

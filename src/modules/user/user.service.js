@@ -12,9 +12,9 @@ const { hashPassword, comparePassword } = require('../../utils/hash');
 const createUserService = ({ userRepository, roleRepository }) => {
   const safeUserSelect = { id: true, name: true, email: true, roleId: true, createdAt: true };
 
-  const createUser = async ({ name, email, password, roleId }) => {
-    // Validate role exists
-    const role = await roleRepository.findById(roleId);
+  const createUserByRoleKey = async ({ name, email, password, roleKey }) => {
+    // Find role by roleKey
+    const role = await roleRepository.findByRoleKey(roleKey);
     if (!role) {
       throw new ApiError('Role not found', 404);
     }
@@ -33,7 +33,7 @@ const createUserService = ({ userRepository, roleRepository }) => {
         name,
         email,
         password: hashedPassword,
-        roleId,
+        roleId: role.id,
       },
       { select: safeUserSelect }
     );
@@ -83,7 +83,14 @@ const createUserService = ({ userRepository, roleRepository }) => {
     return { message: 'Password changed successfully' };
   };
 
-  return { createUser, getUsers, getUser, updateUser, deleteUser, changePassword };
+  return {
+    createUserByRoleKey,
+    getUsers,
+    getUser,
+    updateUser,
+    deleteUser,
+    changePassword,
+  };
 };
 
 module.exports = { createUserService };
