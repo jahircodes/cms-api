@@ -40,7 +40,7 @@ async function main() {
   // Seed admin user
   const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
   const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@3348';
-  const adminName = process.env.ADMIN_NAME || 'Super Admin';
+  const adminName = process.env.ADMIN_NAME || 'Admin';
 
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
