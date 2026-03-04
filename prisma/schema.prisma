@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum CategoryStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Role {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  roleKey    String      @unique
+  status     RoleStatus  @default(ACTIVE)
+
+  users      User[]
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([roleKey])
+  @@map("role")
+}
+
+model User {
+  id                   Int         @id @default(autoincrement())
+  roleId               Int
+  name                 String
+  email                String      @unique
+  password             String
+
+  status               UserStatus  @default(ACTIVE)
+
+  emailVerified        Boolean     @default(false)
+  verificationToken    String?     @unique
+  verificationExpires  DateTime?
+
+  role                 Role        @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  posts                Post[]
+  pages                Page[]
+
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  @@index([email])
+  @@index([roleId])
+  @@map("user")
+}
+
+model Category {
+  id        Int             @id @default(autoincrement())
+  name      String
+  slug      String          @unique
+  status    CategoryStatus  @default(ACTIVE)
+
+  posts     Post[]
+
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([slug])
+  @@map("category")
+}
+
+model Post {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  categoryId  Int
+  title       String
+  slug        String     @unique
+  excerpt     String?    @db.Text
+  content     String     @db.Text
+  image       String?
+  status      PostStatus @default(DRAFT)
+
+  category    Category   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([categoryId])
+  @@index([userId])
+  @@index([slug])
+  @@index([status])
+  @@map("post")
+}
+
+model Page {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  title     String
+  slug      String     @unique
+  content   String     @db.Text
+  status    PageStatus @default(DRAFT)
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([slug])
+  @@index([userId])
+  @@index([status])
+  @@map("page")
+}
