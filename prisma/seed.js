@@ -12,7 +12,6 @@ require('dotenv/config');
 const prisma = new PrismaClient();
 
 const roles = [
-  { name: 'Super Admin', roleKey: 'SUPER_ADMIN' },
   { name: 'Admin', roleKey: 'ADMIN' },
   { name: 'Editor', roleKey: 'EDITOR' },
   { name: 'Author', roleKey: 'AUTHOR' },
@@ -33,9 +32,9 @@ async function main() {
   }
   console.log(`✅ Created ${roles.length} roles`);
 
-  // Get SUPER_ADMIN role
-  const superAdminRole = await prisma.role.findUnique({
-    where: { roleKey: 'SUPER_ADMIN' },
+  // Get ADMIN role
+  const adminRole = await prisma.role.findUnique({
+    where: { roleKey: 'ADMIN' },
   });
 
   // Seed admin user
@@ -52,7 +51,7 @@ async function main() {
       name: adminName,
       email: adminEmail,
       password: hashedPassword,
-      roleId: superAdminRole.id,
+      roleId: adminRole.id,
       emailVerified: true,
     },
   });
