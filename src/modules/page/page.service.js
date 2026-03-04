@@ -56,13 +56,10 @@ const createPageService = ({ pageRepository }) => {
       throw new ApiError('Page not found', 404);
     }
 
-    const updateData = {
-      content,
-      status,
-    };
+    const updateData = {};
 
     // Only update slug if title is being changed
-    if (title && title !== existing.title) {
+    if (title !== undefined && title !== existing.title) {
       const slug = slugify(title);
       const existingBySlug = await pageRepository.findBySlug(slug);
       if (existingBySlug && existingBySlug.id !== id) {
@@ -71,6 +68,9 @@ const createPageService = ({ pageRepository }) => {
       updateData.title = title;
       updateData.slug = slug;
     }
+
+    if (content !== undefined) updateData.content = content;
+    if (status !== undefined) updateData.status = status;
 
     const page = await pageRepository.update({ id }, updateData);
     return page;

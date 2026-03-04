@@ -61,16 +61,10 @@ const createPostService = ({ postRepository }) => {
       throw new ApiError('Post not found', 404);
     }
 
-    const updateData = {
-      excerpt,
-      content,
-      image,
-      status,
-      categoryId,
-    };
+    const updateData = {};
 
     // Only update slug if title is being changed
-    if (title && title !== existing.title) {
+    if (title !== undefined && title !== existing.title) {
       const slug = slugify(title);
       const existingBySlug = await postRepository.findBySlug(slug);
       if (existingBySlug && existingBySlug.id !== id) {
@@ -79,6 +73,12 @@ const createPostService = ({ postRepository }) => {
       updateData.title = title;
       updateData.slug = slug;
     }
+
+    if (excerpt !== undefined) updateData.excerpt = excerpt;
+    if (content !== undefined) updateData.content = content;
+    if (image !== undefined) updateData.image = image;
+    if (status !== undefined) updateData.status = status;
+    if (categoryId !== undefined) updateData.categoryId = categoryId;
 
     const post = await postRepository.update({ id }, updateData);
     return post;

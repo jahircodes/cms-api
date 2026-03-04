@@ -46,30 +46,29 @@ const createRoleService = ({ roleRepository }) => {
       throw new ApiError('Role not found', 404);
     }
 
+    const updateData = {};
+
     // Check if name is being changed and if new name already exists
-    if (name && name !== existing.name) {
+    if (name !== undefined && name !== existing.name) {
       const existingByName = await roleRepository.findOne({ name });
       if (existingByName) {
         throw new ApiError('Role with this name already exists', 409);
       }
+      updateData.name = name;
     }
 
     // Check if roleKey is being changed and if new key already exists
-    if (roleKey && roleKey !== existing.roleKey) {
+    if (roleKey !== undefined && roleKey !== existing.roleKey) {
       const existingByKey = await roleRepository.findByRoleKey(roleKey);
       if (existingByKey) {
         throw new ApiError('Role with this key already exists', 409);
       }
+      updateData.roleKey = roleKey;
     }
 
-    const role = await roleRepository.update(
-      { id },
-      {
-        name,
-        roleKey,
-        status,
-      }
-    );
+    if (status !== undefined) updateData.status = status;
+
+    const role = await roleRepository.update({ id }, updateData);
     return role;
   };
 

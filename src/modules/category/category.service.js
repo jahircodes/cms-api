@@ -41,15 +41,19 @@ const createCategoryService = ({ categoryRepository }) => {
     if (!existing) {
       throw new ApiError('Category not found', 404);
     }
-    const slug = slugify(name);
-    const category = await categoryRepository.update(
-      { id },
-      {
-        name,
-        slug,
-        status,
-      }
-    );
+
+    const updateData = {};
+
+    if (name !== undefined) {
+      updateData.name = name;
+      updateData.slug = slugify(name);
+    }
+
+    if (status !== undefined) {
+      updateData.status = status;
+    }
+
+    const category = await categoryRepository.update({ id }, updateData);
     return category;
   };
 
