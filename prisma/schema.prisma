@@ -25,6 +25,7 @@ enum CategoryStatus {
 
 enum PostStatus {
   DRAFT
+  SCHEDULED
   PUBLISHED
 }
 
@@ -98,6 +99,7 @@ model Post {
   content     String     @db.Text
   image       String?
   status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
 
   category    Category   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   user        User       @relation(fields: [userId], references: [id], onDelete: Restrict)

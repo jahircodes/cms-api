@@ -42,6 +42,7 @@ const { createPageRepository } = require('./modules/page/page.repository');
 const { createPageService } = require('./modules/page/page.service');
 const { buildPageController } = require('./modules/page/page.controller');
 const { buildPageRouter } = require('./modules/page/page.routes');
+const { startScheduler } = require('./utils/scheduler');
 
 const app = express();
 
@@ -70,6 +71,9 @@ const pageRepository = createPageRepository({ prisma });
 const pageService = createPageService({ pageRepository });
 const pageController = buildPageController({ pageService });
 const pageRoutes = buildPageRouter({ pageController });
+
+// Start post publishing scheduler
+startScheduler({ postService });
 
 app.use(helmet());
 app.use(cors());

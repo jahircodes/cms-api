@@ -10,7 +10,16 @@ const slugify = require('../../utils/slugify');
 const { ApiError } = require('../../shared/ApiError');
 
 const createPostService = ({ postRepository }) => {
-  const createPost = async ({ userId, categoryId, title, excerpt, content, image, status }) => {
+  const createPost = async ({
+    userId,
+    categoryId,
+    title,
+    excerpt,
+    content,
+    image,
+    status,
+    publishedAt,
+  }) => {
     const slug = slugify(title);
     const existing = await postRepository.findBySlug(slug);
     if (existing) {
@@ -26,6 +35,7 @@ const createPostService = ({ postRepository }) => {
       content,
       image,
       status: status || 'DRAFT',
+      publishedAt: publishedAt ? new Date(publishedAt) : null,
     });
     return post;
   };
@@ -55,7 +65,10 @@ const createPostService = ({ postRepository }) => {
     return post;
   };
 
-  const updatePost = async (id, { title, excerpt, content, image, status, categoryId }) => {
+  const updatePost = async (
+    id,
+    { title, excerpt, content, image, status, categoryId, publishedAt }
+  ) => {
     const existing = await postRepository.findById(id);
     if (!existing) {
       throw new ApiError('Post not found', 404);
@@ -79,6 +92,8 @@ const createPostService = ({ postRepository }) => {
     if (image !== undefined) updateData.image = image;
     if (status !== undefined) updateData.status = status;
     if (categoryId !== undefined) updateData.categoryId = categoryId;
+    if (publishedAt !== undefined)
+      updateData.publishedAt = publishedAt ? new Date(publishedAt) : null;
 
     const post = await postRepository.update({ id }, updateData);
     return post;
@@ -119,6 +134,27 @@ const createPostService = ({ postRepository }) => {
     };
   };
 
+  const publishScheduledPosts = async () => {
+    const scheduledPosts = await postRepository.findScheduledPostsToPublish();
+
+    const publishedPosts = [];
+
+    for (const post of scheduledPosts) {
+      try {
+        const updated = await postRepository.update({ id: post.id }, { status: 'PUBLISHED' });
+        publishedPosts.push(updated);
+      } catch (error) {
+        // Log error but continue processing other posts
+        console.error(`Failed to publish post ${post.id}:`, error.message);
+      }
+    }
+
+    return {
+      count: publishedPosts.length,
+      posts: publishedPosts,
+    };
+  };
+
   return {
     createPost,
     getPosts,
@@ -126,6 +162,7 @@ const createPostService = ({ postRepository }) => {
     updatePost,
     deletePost,
     searchPosts,
+    publishScheduledPosts,
   };
 };
 

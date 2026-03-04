@@ -48,7 +48,24 @@ const createPostRepository = ({ prisma }) => {
     return { data, total };
   };
 
-  return { ...base, findBySlug, search };
+  const findScheduledPostsToPublish = () => {
+    return base.findMany(
+      {
+        status: 'SCHEDULED',
+        publishedAt: {
+          lte: new Date(),
+        },
+      },
+      {
+        include: {
+          user: { select: { id: true, name: true, email: true } },
+          category: { select: { id: true, name: true, slug: true } },
+        },
+      }
+    );
+  };
+
+  return { ...base, findBySlug, search, findScheduledPostsToPublish };
 };
 
 module.exports = { createPostRepository };

@@ -14,7 +14,23 @@ const createPostSchema = Joi.object({
   excerpt: Joi.string().max(500).optional(),
   content: Joi.string().required(),
   image: Joi.string().uri().optional(),
-  status: Joi.string().valid('DRAFT', 'PUBLISHED').optional(),
+  status: Joi.string().valid('DRAFT', 'SCHEDULED', 'PUBLISHED').optional(),
+  publishedAt: Joi.date().iso().optional(),
+}).custom((value, helpers) => {
+  // If status is SCHEDULED, publishedAt is required and must be in the future
+  if (value.status === 'SCHEDULED') {
+    if (!value.publishedAt) {
+      return helpers.error('any.custom', {
+        message: 'publishedAt is required when status is SCHEDULED',
+      });
+    }
+    if (new Date(value.publishedAt) <= new Date()) {
+      return helpers.error('any.custom', {
+        message: 'publishedAt must be in the future for scheduled posts',
+      });
+    }
+  }
+  return value;
 });
 
 const updatePostSchema = Joi.object({
@@ -23,12 +39,28 @@ const updatePostSchema = Joi.object({
   excerpt: Joi.string().max(500).optional(),
   content: Joi.string().optional(),
   image: Joi.string().uri().optional(),
-  status: Joi.string().valid('DRAFT', 'PUBLISHED').optional(),
+  status: Joi.string().valid('DRAFT', 'SCHEDULED', 'PUBLISHED').optional(),
+  publishedAt: Joi.date().iso().optional(),
+}).custom((value, helpers) => {
+  // If status is SCHEDULED, publishedAt is required and must be in the future
+  if (value.status === 'SCHEDULED') {
+    if (!value.publishedAt) {
+      return helpers.error('any.custom', {
+        message: 'publishedAt is required when status is SCHEDULED',
+      });
+    }
+    if (new Date(value.publishedAt) <= new Date()) {
+      return helpers.error('any.custom', {
+        message: 'publishedAt must be in the future for scheduled posts',
+      });
+    }
+  }
+  return value;
 });
 
 const searchQuerySchema = Joi.object({
   q: Joi.string().min(1).max(200).optional().allow(''),
-  status: Joi.string().valid('DRAFT', 'PUBLISHED').optional(),
+  status: Joi.string().valid('DRAFT', 'SCHEDULED', 'PUBLISHED').optional(),
   categoryId: Joi.number().integer().positive().optional(),
   page: Joi.number().integer().min(1).default(1),
   limit: Joi.number().integer().min(1).max(100).default(10),
