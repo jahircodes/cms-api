@@ -22,7 +22,6 @@ async function main() {
   // Create roles
   console.log('📝 Creating roles...');
   const rolesData = [
-    { name: 'Super Admin', roleKey: 'SUPER_ADMIN', status: 'ACTIVE' },
     { name: 'Admin', roleKey: 'ADMIN', status: 'ACTIVE' },
     { name: 'Editor', roleKey: 'EDITOR', status: 'ACTIVE' },
     { name: 'Author', roleKey: 'AUTHOR', status: 'ACTIVE' },
@@ -40,12 +39,12 @@ async function main() {
   console.log('✅ Roles created/verified\n');
 
   // Get super admin role
-  const superAdminRole = await prisma.role.findUnique({
-    where: { roleKey: 'SUPER_ADMIN' },
+  const adminRole = await prisma.role.findUnique({
+    where: { roleKey: 'ADMIN' },
   });
 
-  if (!superAdminRole) {
-    throw new Error('SUPER_ADMIN role not found after creation');
+  if (!adminRole) {
+    throw new Error('ADMIN role not found after creation');
   }
 
   // Create super admin user
@@ -63,7 +62,7 @@ async function main() {
 
     await prisma.user.create({
       data: {
-        roleId: superAdminRole.id,
+        roleId: adminRole.id,
         name: adminName,
         email: adminEmail,
         password: hashedPassword,
@@ -72,14 +71,14 @@ async function main() {
       },
     });
 
-    console.log('✅ Super admin created successfully\n');
+    console.log('✅ Admin created successfully\n');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('📧 Email:', adminEmail);
     console.log('🔑 Password:', adminPassword);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('⚠️  IMPORTANT: Change this password immediately after first login!\n');
   } else {
-    console.log('ℹ️  Super admin already exists\n');
+    console.log('ℹ️  Admin already exists\n');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('📧 Email:', existingAdmin.email);
     console.log('👤 Name:', existingAdmin.name);
