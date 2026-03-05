@@ -1,3 +1,10 @@
+/**
+ * Response Utilities
+ * ------------------
+ * Provides standardized response formatting for API endpoints.
+ * Ensures consistent response structure across the application.
+ */
+
 const sendSuccess = (res, data = null, message = 'success') => {
   return res.json({ success: true, message, data });
 };

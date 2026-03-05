@@ -1,3 +1,10 @@
+/**
+ * Server Entry Point
+ * ------------------
+ * Starts HTTP server and handles process-level errors.
+ * Gracefully handles uncaught exceptions and promise rejections.
+ */
+
 const http = require('http');
 const { app } = require('./app');
 const { loadEnv } = require('./config/env');

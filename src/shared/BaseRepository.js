@@ -1,9 +1,17 @@
+/**
+ * Base Repository
+ * ---------------
+ * Provides reusable CRUD operations for Prisma models.
+ * Abstracts common database patterns to reduce code duplication.
+ */
+
 const createBaseRepository = ({ prisma, model }) => {
   const delegate = prisma[model];
 
   // --- READ ---
   const findUnique = (where, options = {}) => delegate.findUnique({ where, ...options });
   const findById = (id, options = {}) => findUnique({ id }, options);
+  const findOne = (where = {}, options = {}) => delegate.findFirst({ where, ...options });
   const findFirst = (where = {}, options = {}) => delegate.findFirst({ where, ...options });
   const findMany = (where = {}, options = {}) => delegate.findMany({ where, ...options });
 
@@ -34,6 +42,7 @@ const createBaseRepository = ({ prisma, model }) => {
     // READ
     findUnique,
     findById,
+    findOne,
     findFirst,
     findMany,
 

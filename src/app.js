@@ -1,3 +1,10 @@
+/**
+ * Express Application
+ * -------------------
+ * Main application setup with dependency injection.
+ * Configures middleware, routes, and error handling.
+ */
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -7,6 +14,10 @@ const { errorHandler } = require('./middlewares/error.middleware');
 const { authMiddleware } = require('./middlewares/auth.middleware');
 const { requestIdMiddleware } = require('./middlewares/requestId.middleware');
 const { getPrismaClient } = require('./database/prismaClient');
+const { ApiError } = require('./shared/ApiError');
+const { logger } = require('./config/logger');
+const { sendSuccess } = require('./utils/response');
+
 const { createAuthRepository } = require('./modules/auth/auth.repository');
 const { createAuthService } = require('./modules/auth/auth.service');
 const { buildAuthController } = require('./modules/auth/auth.controller');
@@ -15,9 +26,23 @@ const { createUserRepository } = require('./modules/user/user.repository');
 const { createUserService } = require('./modules/user/user.service');
 const { buildUserController } = require('./modules/user/user.controller');
 const { buildUserRouter } = require('./modules/user/user.routes');
-const { ApiError } = require('./shared/ApiError');
-const { logger } = require('./config/logger');
-const { sendSuccess } = require('./utils/response');
+const { createCategoryRepository } = require('./modules/category/category.repository');
+const { createCategoryService } = require('./modules/category/category.service');
+const { buildCategoryController } = require('./modules/category/category.controller');
+const { buildCategoryRouter } = require('./modules/category/category.routes');
+const { createRoleRepository } = require('./modules/role/role.repository');
+const { createRoleService } = require('./modules/role/role.service');
+const { buildRoleController } = require('./modules/role/role.controller');
+const { buildRoleRouter } = require('./modules/role/role.routes');
+const { createPostRepository } = require('./modules/post/post.repository');
+const { createPostService } = require('./modules/post/post.service');
+const { buildPostController } = require('./modules/post/post.controller');
+const { buildPostRouter } = require('./modules/post/post.routes');
+const { createPageRepository } = require('./modules/page/page.repository');
+const { createPageService } = require('./modules/page/page.service');
+const { buildPageController } = require('./modules/page/page.controller');
+const { buildPageRouter } = require('./modules/page/page.routes');
+const { startScheduler } = require('./utils/scheduler');
 
 const app = express();
 
@@ -26,10 +51,29 @@ const authRepository = createAuthRepository({ prisma });
 const authService = createAuthService({ authRepository });
 const authController = buildAuthController({ authService });
 const authRoutes = buildAuthRouter({ authController });
+const roleRepository = createRoleRepository({ prisma });
 const userRepository = createUserRepository({ prisma });
-const userService = createUserService({ userRepository });
+const userService = createUserService({ userRepository, roleRepository });
 const userController = buildUserController({ userService });
 const userRoutes = buildUserRouter({ userController });
+const categoryRepository = createCategoryRepository({ prisma });
+const categoryService = createCategoryService({ categoryRepository });
+const categoryController = buildCategoryController({ categoryService });
+const categoryRoutes = buildCategoryRouter({ categoryController });
+const roleService = createRoleService({ roleRepository });
+const roleController = buildRoleController({ roleService });
+const roleRoutes = buildRoleRouter({ roleController });
+const postRepository = createPostRepository({ prisma });
+const postService = createPostService({ postRepository });
+const postController = buildPostController({ postService });
+const postRoutes = buildPostRouter({ postController });
+const pageRepository = createPageRepository({ prisma });
+const pageService = createPageService({ pageRepository });
+const pageController = buildPageController({ pageService });
+const pageRoutes = buildPageRouter({ pageController });
+
+// Start post publishing scheduler
+startScheduler({ postService });
 
 app.use(helmet());
 app.use(cors());
@@ -64,6 +108,10 @@ app.get('/api', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', authMiddleware, userRoutes);
+app.use('/api/categories', authMiddleware, categoryRoutes);
+app.use('/api/roles', authMiddleware, roleRoutes);
+app.use('/api/posts', authMiddleware, postRoutes);
+app.use('/api/pages', authMiddleware, pageRoutes);
 
 app.use((req, res, next) => {
   next(new ApiError('Route not found', 404));

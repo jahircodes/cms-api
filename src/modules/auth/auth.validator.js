@@ -1,3 +1,10 @@
+/**
+ * Auth Validator
+ * --------------
+ * Defines validation schemas and middleware for auth endpoints.
+ * Uses Joi for request validation.
+ */
+
 const Joi = require('joi');
 const { ApiError } = require('../../shared/ApiError');
 

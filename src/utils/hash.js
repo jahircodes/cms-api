@@ -1,3 +1,10 @@
+/**
+ * Hash Utilities
+ * --------------
+ * Provides password hashing and comparison using bcrypt.
+ * Used for secure password storage and authentication.
+ */
+
 const bcrypt = require('bcryptjs');
 
 const hashPassword = async (plain) => {
