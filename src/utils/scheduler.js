@@ -6,7 +6,7 @@
  */
 
 const cron = require('node-cron');
-const logger = require('../config/logger');
+const { logger } = require('../config/logger');
 
 let schedulerInstance = null;
 
