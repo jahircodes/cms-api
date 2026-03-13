@@ -29,8 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       },
 
       status: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
+        type: DataTypes.ENUM("active", "inactive"),
+        allowNull: false,
+        defaultValue: "active",
       },
 
       lastLoginAt: {
