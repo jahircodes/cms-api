@@ -54,9 +54,10 @@ module.exports = (sequelize, DataTypes) => {
     },
   );
 
-  // Association: Each User belongsTo one Role
+  // Associations
   User.associate = (models) => {
     User.belongsTo(models.Role, { foreignKey: "roleId" });
+    User.hasMany(models.RefreshToken, { foreignKey: "userId" });
   };
 
   return User;
