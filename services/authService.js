@@ -55,7 +55,13 @@ const refreshToken = async (refreshToken) => {
   return { accessToken, user };
 };
 
+const logout = async (refreshToken) => {
+  // Remove the refresh token from the database
+  await RefreshToken.destroy({ where: { token: refreshToken } });
+};
+
 module.exports = {
   login,
   refreshToken,
+  logout,
 };

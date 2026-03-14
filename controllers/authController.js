@@ -1,5 +1,26 @@
 const { authService } = require("../services");
 
+const logout = async (req, res, next) => {
+  try {
+    // Get refresh token from cookie or body
+    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+    if (!refreshToken) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No refresh token provided" });
+    }
+    await authService.logout(refreshToken);
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+    res.json({ success: true, message: "Logged out successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -67,4 +88,5 @@ const refreshToken = async (req, res, next) => {
 module.exports = {
   login,
   refreshToken,
+  logout,
 };
