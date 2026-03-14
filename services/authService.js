@@ -14,12 +14,12 @@ const login = async (email, password) => {
   const accessToken = jwt.sign(
     { userId: user.id, roleKey: user.Role.roleKey },
     process.env.JWT_SECRET || "secret",
-    { expiresIn: "15m" },
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m" },
   );
   const refreshToken = jwt.sign(
     { userId: user.id },
     process.env.JWT_REFRESH_SECRET || "refreshsecret",
-    { expiresIn: "7d" },
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" },
   );
   await RefreshToken.create({
     token: refreshToken,
@@ -50,7 +50,7 @@ const refreshToken = async (refreshToken) => {
   const accessToken = jwt.sign(
     { userId: user.id, roleKey: user.Role.roleKey },
     process.env.JWT_SECRET || "secret",
-    { expiresIn: "15m" },
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m" },
   );
   return { accessToken, user };
 };
