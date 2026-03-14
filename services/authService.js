@@ -7,9 +7,9 @@ const login = async (email, password) => {
     where: { email },
     include: [{ model: Role }],
   });
-  if (!user) return { user: null };
+  if (!user) throw new Error("Invalid credentials");
   const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return { user: null };
+  if (!valid) throw new Error("Invalid credentials");
 
   const accessToken = jwt.sign(
     { userId: user.id, roleKey: user.Role.roleKey },
@@ -31,15 +31,22 @@ const login = async (email, password) => {
 
 const refreshToken = async (refreshToken) => {
   const stored = await RefreshToken.findOne({ where: { token: refreshToken } });
-  if (!stored || stored.expiresAt < new Date()) return {};
-  const payload = jwt.verify(
-    refreshToken,
-    process.env.JWT_REFRESH_SECRET || "refreshsecret",
-  );
+  if (!stored || stored.expiresAt < new Date()) {
+    throw new Error("Invalid or expired refresh token");
+  }
+  let payload;
+  try {
+    payload = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET || "refreshsecret",
+    );
+  } catch (err) {
+    throw new Error("Invalid or expired refresh token");
+  }
   const user = await User.findByPk(payload.userId, {
     include: [{ model: Role }],
   });
-  if (!user) return {};
+  if (!user) throw new Error("User not found");
   const accessToken = jwt.sign(
     { userId: user.id, roleKey: user.Role.roleKey },
     process.env.JWT_SECRET || "secret",

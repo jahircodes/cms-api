@@ -18,17 +18,23 @@ function validate(schema, source) {
       } else if (req.params && Object.keys(req.params).length > 0) {
         actualSource = "params";
       } else {
-        return res.status(400).json({ message: "No data to validate" });
+        return res
+          .status(400)
+          .json({ success: false, message: "No data to validate" });
       }
     }
 
     if (!["body", "query", "params"].includes(actualSource)) {
-      return res.status(500).json({ message: "Invalid validator source" });
+      return res
+        .status(500)
+        .json({ success: false, message: "Invalid validator source" });
     }
 
     const { error } = schema.validate(req[actualSource]);
     if (error) {
-      return res.status(400).json({ message: error.details[0].message });
+      return res
+        .status(400)
+        .json({ success: false, message: error.details[0].message });
     }
 
     next();
