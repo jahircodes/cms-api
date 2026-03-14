@@ -11,17 +11,14 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        // Example: 'Admin', 'Editor', etc.
       },
 
-      role: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-
-      key: {
+      roleKey: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+        // Example: 'ADMIN', 'EDITOR', etc.
       },
 
       status: {

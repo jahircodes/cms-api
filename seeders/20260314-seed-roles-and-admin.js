@@ -7,40 +7,35 @@ module.exports = {
     // Insert roles
     await queryInterface.bulkInsert("roles", [
       {
-        name: "ADMIN",
-        role: "ADMIN",
-        key: "admin",
+        name: "Admin",
+        role_key: "ADMIN",
         status: true,
       },
       {
-        name: "EDITOR",
-        role: "EDITOR",
-        key: "editor",
+        name: "Editor",
+        role_key: "EDITOR",
         status: true,
       },
       {
-        name: "AUTHOR",
-        role: "AUTHOR",
-        key: "author",
+        name: "Author",
+        role_key: "AUTHOR",
         status: true,
       },
       {
-        name: "CONTRIBUTOR",
-        role: "CONTRIBUTOR",
-        key: "contributor",
+        name: "Contributor",
+        role_key: "CONTRIBUTOR",
         status: true,
       },
       {
-        name: "SUBSCRIBER",
-        role: "SUBSCRIBER",
-        key: "subscriber",
+        name: "Subscriber",
+        role_key: "SUBSCRIBER",
         status: true,
       },
     ]);
 
     // Get ADMIN role id
     const [roles] = await queryInterface.sequelize.query(
-      'SELECT id FROM roles WHERE name = "ADMIN" LIMIT 1;',
+      'SELECT id FROM roles WHERE role_key = "ADMIN" LIMIT 1;',
     );
     const adminRoleId = roles[0]?.id;
 
@@ -62,7 +57,7 @@ module.exports = {
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete("users", { email: "admin@example.com" });
     await queryInterface.bulkDelete("roles", {
-      name: ["ADMIN", "EDITOR", "AUTHOR", "CONTRIBUTOR", "SUBSCRIBER"],
+      role_key: ["ADMIN", "EDITOR", "AUTHOR", "CONTRIBUTOR", "SUBSCRIBER"],
     });
   },
 };
