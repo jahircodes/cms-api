@@ -34,6 +34,10 @@ const login = async (req, res, next) => {
         .json({ success: false, message: "Invalid credentials" });
     }
 
+    console.log("Generated Access Token:", accessToken);
+    console.log("Generated Refresh Token:", refreshToken);
+    console.log("User Role:", user.Role ? user.Role.roleKey : "No role");
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
