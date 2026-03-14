@@ -65,6 +65,7 @@ const login = async (req, res, next) => {
 
 const refreshToken = async (req, res, next) => {
   try {
+    console.log("Refresh Token from Cookie:", req.cookies.refreshToken);
     const { refreshToken } = req.cookies;
     const { accessToken, user } = await authService.refreshToken(refreshToken);
     if (!accessToken) {
