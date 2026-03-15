@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const RefreshToken = sequelize.define(
-    "RefreshToken",
+    'RefreshToken',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "refresh_tokens",
+      tableName: 'refresh_tokens',
       timestamps: false,
       underscored: true,
     },
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 
   // Association
   RefreshToken.associate = (models) => {
-    RefreshToken.belongsTo(models.User, { foreignKey: "userId" });
+    RefreshToken.belongsTo(models.User, { foreignKey: 'userId' });
   };
 
   return RefreshToken;

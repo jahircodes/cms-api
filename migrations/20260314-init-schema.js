@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // Create roles table
-    await queryInterface.createTable("roles", {
+    await queryInterface.createTable('roles', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -35,12 +35,12 @@ module.exports = {
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       deleted_at: {
         type: Sequelize.DATE,
@@ -49,7 +49,7 @@ module.exports = {
     });
 
     // Create users table
-    await queryInterface.createTable("users", {
+    await queryInterface.createTable('users', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -60,11 +60,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "roles",
-          key: "id",
+          model: 'roles',
+          key: 'id',
         },
-        onUpdate: "CASCADE",
-        onDelete: "RESTRICT",
+        onUpdate: 'CASCADE',
+        onDelete: 'RESTRICT',
       },
       name: {
         type: Sequelize.STRING,
@@ -104,12 +104,12 @@ module.exports = {
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       deleted_at: {
         type: Sequelize.DATE,
@@ -119,7 +119,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("users");
-    await queryInterface.dropTable("roles");
+    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('roles');
   },
 };

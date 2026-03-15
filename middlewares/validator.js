@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require('joi');
 
 /**
  * Universal validator for body, query, or params.
@@ -12,22 +12,22 @@ function validate(schema, source) {
     // Auto-detect source if not provided
     if (!actualSource) {
       if (req.body && Object.keys(req.body).length > 0) {
-        actualSource = "body";
+        actualSource = 'body';
       } else if (req.query && Object.keys(req.query).length > 0) {
-        actualSource = "query";
+        actualSource = 'query';
       } else if (req.params && Object.keys(req.params).length > 0) {
-        actualSource = "params";
+        actualSource = 'params';
       } else {
         return res
           .status(400)
-          .json({ success: false, message: "No data to validate" });
+          .json({ success: false, message: 'No data to validate' });
       }
     }
 
-    if (!["body", "query", "params"].includes(actualSource)) {
+    if (!['body', 'query', 'params'].includes(actualSource)) {
       return res
         .status(500)
-        .json({ success: false, message: "Invalid validator source" });
+        .json({ success: false, message: 'Invalid validator source' });
     }
 
     const { error } = schema.validate(req[actualSource]);
