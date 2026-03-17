@@ -1,6 +1,6 @@
 const { Role } = require('../models');
 
-const getAllRoles = async () => {
+const getAllRolesService = async () => {
   return await Role.findAll({
     attributes: ['id', 'name', 'roleKey', 'status'],
     where: {
@@ -10,5 +10,5 @@ const getAllRoles = async () => {
 };
 
 module.exports = {
-  getAllRoles,
+  getAllRolesService,
 };

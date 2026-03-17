@@ -1,6 +1,29 @@
+const bcrypt = require('bcrypt');
 const { User, Role } = require('../models');
 
-const getAllUsers = async () => {
+const createUserService = async ({ name, email, roleId }) => {
+  // Check if email already exists
+  const existing = await User.findOne({ where: { email } });
+
+  if (existing) {
+    throw new Error('Email already in use');
+  }
+
+  // Create user
+  await User.create({
+    name,
+    email,
+    roleId,
+    status: true,
+  });
+
+  //return succesful message
+  return {
+    message: 'User created successfully',
+  };
+};
+
+const getAllUsersService = async () => {
   let result = await User.findAll({
     attributes: ['id', 'name', 'email', 'mobileNumber', 'status', 'roleId'],
     include: [{ model: Role, attributes: ['id', 'name', 'roleKey'] }],
@@ -21,5 +44,6 @@ const getAllUsers = async () => {
 };
 
 module.exports = {
-  getAllUsers,
+  createUserService,
+  getAllUsersService,
 };

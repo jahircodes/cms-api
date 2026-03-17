@@ -1,4 +1,8 @@
-const { authService } = require('../services');
+const {
+  loginService,
+  refreshTokenService,
+  logoutService,
+} = require('../services/authService');
 
 const logout = async (req, res, next) => {
   try {
@@ -9,7 +13,7 @@ const logout = async (req, res, next) => {
         .status(400)
         .json({ success: false, message: 'No refresh token provided' });
     }
-    await authService.logout(refreshToken);
+    await logoutService(refreshToken);
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -24,7 +28,7 @@ const logout = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const { user, accessToken, refreshToken } = await authService.login(
+    const { user, accessToken, refreshToken } = await loginService(
       email,
       password,
     );
@@ -67,7 +71,7 @@ const refreshToken = async (req, res, next) => {
   try {
     console.log('Refresh Token from Cookie:', req.cookies.refreshToken);
     const { refreshToken } = req.cookies;
-    const { accessToken, user } = await authService.refreshToken(refreshToken);
+    const { accessToken, user } = await refreshTokenService(refreshToken);
     if (!accessToken) {
       return res
         .status(401)

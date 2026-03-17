@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { authController } = require('../controllers');
-const { login: loginSchema } = require('../schemas/authSchema');
+
 const validate = require('../middlewares/validator');
 const authenticateToken = require('../middlewares/authenticateToken');
+const authSchema = require('../schemas/authSchema');
 
-router.post('/login', validate(loginSchema, 'body'), authController.login);
+router.post('/login', validate(authSchema, 'body'), authController.login);
 router.post('/refresh', authController.refreshToken);
 router.post('/logout', authController.logout);
 

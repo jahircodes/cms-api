@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { User, Role, RefreshToken } = require('../models');
 const dayjs = require('dayjs');
 
-const login = async (email, password) => {
+const loginService = async (email, password) => {
   const user = await User.findOne({
     where: { email },
     include: [{ model: Role }],
@@ -39,7 +39,7 @@ const login = async (email, password) => {
   return { user, accessToken, refreshToken };
 };
 
-const refreshToken = async (refreshToken) => {
+const refreshTokenService = async (refreshToken) => {
   const stored = await RefreshToken.findOne({ where: { token: refreshToken } });
   if (!stored || stored.expiresAt < new Date()) {
     throw new Error('Invalid or expired refresh token');
@@ -65,13 +65,13 @@ const refreshToken = async (refreshToken) => {
   return { accessToken, user };
 };
 
-const logout = async (refreshToken) => {
+const logoutService = async (refreshToken) => {
   // Remove the refresh token from the database
   await RefreshToken.destroy({ where: { token: refreshToken } });
 };
 
 module.exports = {
-  login,
-  refreshToken,
-  logout,
+  loginService,
+  refreshTokenService,
+  logoutService,
 };
