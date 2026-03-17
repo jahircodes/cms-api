@@ -1,14 +1,18 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { User, Role, RefreshToken } = require('../models');
+const dayjs = require('dayjs');
 
 const login = async (email, password) => {
   const user = await User.findOne({
     where: { email },
     include: [{ model: Role }],
   });
+
   if (!user) throw new Error('Invalid credentials');
+
   const valid = await bcrypt.compare(password, user.password);
+
   if (!valid) throw new Error('Invalid credentials');
 
   const accessToken = jwt.sign(
@@ -16,15 +20,21 @@ const login = async (email, password) => {
     process.env.JWT_SECRET || 'secret',
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || '15m' },
   );
+
   const refreshToken = jwt.sign(
     { userId: user.id },
     process.env.JWT_REFRESH_SECRET || 'refreshsecret',
     { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || '7d' },
   );
+
+  //store last login time
+  user.lastLoginAt = dayjs().toDate();
+
+  await user.save();
   await RefreshToken.create({
     token: refreshToken,
     userId: user.id,
-    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    expiresAt: dayjs().add(7, 'day').toDate(),
   });
   return { user, accessToken, refreshToken };
 };
