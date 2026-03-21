@@ -58,6 +58,8 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = (models) => {
     User.belongsTo(models.Role, { foreignKey: 'roleId' });
     User.hasMany(models.RefreshToken, { foreignKey: 'userId' });
+    User.hasOne(models.AuthorProfile, { foreignKey: 'userId' });
+    User.hasMany(models.AuthorSocialLink, { foreignKey: 'userId' });
   };
 
   return User;
