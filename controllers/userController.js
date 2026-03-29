@@ -1,6 +1,8 @@
 const {
   getAllUsersService,
   createUserService,
+  changePasswordService,
+  deleteUserService,
 } = require('../services/userService');
 
 const createUser = async (req, res, next) => {
@@ -39,7 +41,51 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+const changePassword = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { password } = req.body;
+
+    // Only allow the user themselves or an admin to change the password
+    if (req.user.userId !== Number(userId) && req.user.roleKey !== 'ADMIN') {
+      return res
+        .status(403)
+        .json({ success: false, message: 'Forbidden to change this password' });
+    }
+
+    await changePasswordService({
+      userId: Number(userId),
+      newPassword: password,
+    });
+
+    res.json({ success: true, message: 'Password changed successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteUser = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    // Only allow the user themselves or an admin to delete
+    if (req.user.userId !== Number(userId) && req.user.roleKey !== 'ADMIN') {
+      return res
+        .status(403)
+        .json({ success: false, message: 'Forbidden to delete this user' });
+    }
+
+    await deleteUserService(Number(userId));
+
+    res.json({ success: true, message: 'User deleted successfully' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
+  changePassword,
+  deleteUser,
 };
