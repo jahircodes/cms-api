@@ -4,12 +4,17 @@ const authenticateToken = require('../middlewares/authenticateToken');
 const validate = require('../middlewares/validator');
 const { categoryController } = require('../controllers');
 const {
+  getCategoriesQuerySchema,
   createCategorySchema,
   updateCategorySchema,
 } = require('../schemas/categorySchema');
 
 // Public: list and get
-router.get('/', categoryController.getCategories);
+router.get(
+  '/',
+  validate(getCategoriesQuerySchema, 'query'),
+  categoryController.getCategories,
+);
 router.get('/:id', categoryController.getCategory);
 
 // Protected: create, update, delete

@@ -1,17 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const { userController } = require('../controllers');
-const userSchema = require('../schemas/userSchema');
+const {
+  createUserSchema,
+  getUsersQuerySchema,
+} = require('../schemas/userSchema');
 const validate = require('../middlewares/validator');
 const authenticateToken = require('../middlewares/authenticateToken');
 const changePasswordSchema = require('../schemas/changePasswordSchema');
 const userPasswordSchema = require('../schemas/userPasswordSchema');
 
-// GET /api/user - Get all users
-router.get('/', userController.getUsers);
+// GET /api/user - Paginated users
+router.get(
+  '/',
+  validate(getUsersQuerySchema, 'query'),
+  userController.getUsers,
+);
 
 // POST /api/user - Create user with validation
-router.post('/', validate(userSchema, 'body'), userController.createUser);
+router.post('/', validate(createUserSchema, 'body'), userController.createUser);
 
 // PUT /api/user/:userId/password - Change user's password
 router.put(

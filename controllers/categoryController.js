@@ -1,6 +1,6 @@
 const {
   createCategoryService,
-  getAllCategoriesService,
+  getCategoriesService,
   getCategoryByIdService,
   updateCategoryService,
   deleteCategoryService,
@@ -12,6 +12,7 @@ const createCategory = async (req, res, next) => {
     const result = await createCategoryService(payload);
     res.status(201).json({ success: true, message: result.message });
   } catch (err) {
+    console.log(err);
     if (err.statusCode) {
       return res
         .status(err.statusCode)
@@ -21,10 +22,26 @@ const createCategory = async (req, res, next) => {
   }
 };
 
+/**
+ * Lists categories with pagination (query: pageNo, pageSize).
+ */
 const getCategories = async (req, res, next) => {
   try {
-    const categories = await getAllCategoriesService();
-    res.json({ success: true, data: categories });
+    const { pageNo, pageSize } = req.validatedQuery;
+    const result = await getCategoriesService({
+      pageNo,
+      pageSize,
+    });
+    res.json({
+      success: true,
+      data: result.categories,
+      pagination: {
+        pageNo: result.pageNo,
+        pageSize: result.pageSize,
+        total: result.total,
+        totalPages: result.totalPages,
+      },
+    });
   } catch (err) {
     next(err);
   }

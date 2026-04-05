@@ -2,6 +2,7 @@ const Joi = require('joi');
 
 /**
  * Universal validator for body, query, or params.
+ * For source "query", read results from req.validatedQuery (Express 5: req.query is read-only).
  * @param {Joi.Schema} schema - Joi schema to validate against
  * @param {string} [source] - Optional: "body", "query", or "params"
  */
@@ -30,13 +31,21 @@ function validate(schema, source) {
         .json({ success: false, message: 'Invalid validator source' });
     }
 
-    const { error } = schema.validate(req[actualSource]);
+    const { error, value } = schema.validate(req[actualSource], {
+      stripUnknown: true,
+    });
     if (error) {
       return res
         .status(400)
         .json({ success: false, message: error.details[0].message });
     }
 
+    // Express 5: req.query is read-only; assign coerced defaults on validatedQuery.
+    if (actualSource === 'query') {
+      req.validatedQuery = value;
+    } else {
+      req[actualSource] = value;
+    }
     next();
   };
 }

@@ -1,5 +1,5 @@
 const {
-  getAllUsersService,
+  getUsersService,
   createUserService,
   changePasswordService,
   updateLoggedInUserPasswordService,
@@ -37,10 +37,23 @@ const createUser = async (req, res, next) => {
   }
 };
 
+/**
+ * Lists users with pagination (query: pageNo, pageSize on req.validatedQuery).
+ */
 const getUsers = async (req, res, next) => {
   try {
-    const users = await getAllUsersService();
-    res.json({ success: true, data: users });
+    const { pageNo, pageSize } = req.validatedQuery;
+    const result = await getUsersService({ pageNo, pageSize });
+    res.json({
+      success: true,
+      data: result.users,
+      pagination: {
+        pageNo: result.pageNo,
+        pageSize: result.pageSize,
+        total: result.total,
+        totalPages: result.totalPages,
+      },
+    });
   } catch (err) {
     if (err.statusCode) {
       return res

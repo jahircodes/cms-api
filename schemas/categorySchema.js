@@ -1,4 +1,12 @@
+/**
+ * Joi schemas for category create/update bodies and list query parameters.
+ */
 const Joi = require('joi');
+
+const getCategoriesQuerySchema = Joi.object({
+  pageNo: Joi.number().integer().min(1).default(1),
+  pageSize: Joi.number().integer().min(1).max(100).default(10),
+}).unknown(false);
 
 const createCategorySchema = Joi.object({
   name: Joi.string().max(150).required(),
@@ -17,6 +25,7 @@ const updateCategorySchema = Joi.object({
 });
 
 module.exports = {
+  getCategoriesQuerySchema,
   createCategorySchema,
   updateCategorySchema,
 };

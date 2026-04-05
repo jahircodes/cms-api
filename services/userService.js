@@ -31,8 +31,40 @@ const createUserService = async ({ name, email, roleId }) => {
   };
 };
 
-const getAllUsersService = async () => {
-  let result = await User.findAll({
+/**
+ * Maps a Sequelize User instance (with includes) to the public list shape.
+ * @param user - User model instance with Role, AuthorProfile, AuthorSocialLinks loaded
+ */
+const mapUserListRow = (user) => {
+  const userData = user.toJSON();
+  const profileData = userData.AuthorProfile ? userData.AuthorProfile : null;
+  const socialLinksData = userData.AuthorSocialLinks
+    ? userData.AuthorSocialLinks
+    : [];
+  console.log('User Data:', userData); // Log the user data to see its structure
+  const { Role, AuthorProfile, AuthorSocialLinks, ...rest } = userData;
+
+  return {
+    ...rest,
+    roleName: Role.name,
+    authorBio: profileData ? profileData.bio : null,
+    authorSocialLinks: socialLinksData.map((link) => ({
+      platform: link.platform,
+      url: link.url,
+    })),
+  };
+};
+
+/**
+ * Returns a page of users (with role, profile, social links) and pagination metadata.
+ * @param {{ pageNo: number, pageSize: number }} params
+ */
+const getUsersService = async ({ pageNo, pageSize }) => {
+  const limit = pageSize;
+  const offset = (pageNo - 1) * pageSize;
+
+  const total = await User.count();
+  const rows = await User.findAll({
     attributes: ['id', 'name', 'email', 'mobileNumber', 'status', 'roleId'],
     include: [
       { model: Role, attributes: ['id', 'name', 'roleKey'] },
@@ -45,30 +77,21 @@ const getAllUsersService = async () => {
         attributes: ['id', 'platform', 'url'],
       },
     ],
+    limit,
+    offset,
+    order: [['id', 'ASC']],
   });
 
-  result = result.map((user) => {
-    //exlude role object and add roleName to the response
-    const userData = user.toJSON();
-    const profileData = userData.AuthorProfile ? userData.AuthorProfile : null;
-    const socialLinksData = userData.AuthorSocialLinks
-      ? userData.AuthorSocialLinks
-      : [];
-    console.log('User Data:', userData); // Log the user data to see its structure
-    const { Role, AuthorProfile, AuthorSocialLinks, ...rest } = userData; // Exclude the Role, AuthorProfile, and AuthorSocialLinks objects from the response
+  const users = rows.map(mapUserListRow);
+  const totalPages = pageSize > 0 ? Math.ceil(total / pageSize) : 0;
 
-    return {
-      ...rest,
-      roleName: Role.name, // Include role details in the response
-      authorBio: profileData ? profileData.bio : null, // Include author bio if available
-      authorSocialLinks: socialLinksData.map((link) => ({
-        platform: link.platform,
-        url: link.url,
-      })), // Include author social links if available
-    };
-  });
-
-  return result;
+  return {
+    users,
+    total,
+    pageNo,
+    pageSize,
+    totalPages,
+  };
 };
 
 const changePasswordService = async ({ userId, newPassword }) => {
@@ -227,7 +250,7 @@ const getLoggedInUserService = async ({ userId }) => {
 
 module.exports = {
   createUserService,
-  getAllUsersService,
+  getUsersService,
   changePasswordService,
   updateLoggedInUserPasswordService,
   updateUserService,

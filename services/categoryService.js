@@ -26,10 +26,31 @@ const createCategoryService = async ({
   return { message: 'Category created successfully' };
 };
 
-const getAllCategoriesService = async () => {
-  return await Category.findAll({
+/**
+ * Returns a page of categories and pagination metadata.
+ * @param {{ pageNo: number, pageSize: number }} params
+ */
+const getCategoriesService = async ({ pageNo, pageSize }) => {
+  const limit = pageSize;
+  const offset = (pageNo - 1) * pageSize;
+
+  const { count, rows } = await Category.findAndCountAll({
     attributes: ['id', 'name', 'slug', 'parentId', 'description', 'status'],
+    limit,
+    offset,
+    order: [['id', 'ASC']],
   });
+
+  const totalPages =
+    pageSize > 0 ? Math.ceil(count / pageSize) : 0;
+
+  return {
+    categories: rows,
+    total: count,
+    pageNo,
+    pageSize,
+    totalPages,
+  };
 };
 
 const getCategoryByIdService = async (id) => {
@@ -80,7 +101,7 @@ const deleteCategoryService = async (id) => {
 
 module.exports = {
   createCategoryService,
-  getAllCategoriesService,
+  getCategoriesService,
   getCategoryByIdService,
   updateCategoryService,
   deleteCategoryService,
