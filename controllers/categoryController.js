@@ -52,6 +52,7 @@ const updateCategory = async (req, res, next) => {
     const result = await updateCategoryService(id, payload);
     res.json({ success: true, message: result.message });
   } catch (err) {
+    console.log(err);
     if (err.statusCode) {
       return res
         .status(err.statusCode)

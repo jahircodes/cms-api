@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { Category } = require('../models');
 
 const createCategoryService = async ({
@@ -52,7 +53,7 @@ const updateCategoryService = async (id, data) => {
   // prevent slug collisions
   if (data.slug) {
     const existing = await Category.findOne({
-      where: { slug: data.slug, id: { [Category.sequelize.Op.ne]: id } },
+      where: { slug: data.slug, id: { [Op.ne]: id } },
     });
     if (existing) {
       const error = new Error('Slug already in use');
