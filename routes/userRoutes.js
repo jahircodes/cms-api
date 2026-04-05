@@ -5,6 +5,7 @@ const userSchema = require('../schemas/userSchema');
 const validate = require('../middlewares/validator');
 const authenticateToken = require('../middlewares/authenticateToken');
 const changePasswordSchema = require('../schemas/changePasswordSchema');
+const userPasswordSchema = require('../schemas/userPasswordSchema');
 
 // GET /api/user - Get all users
 router.get('/', userController.getUsers);
@@ -26,7 +27,15 @@ router.put('/:userId', authenticateToken, userController.updateUser);
 // DELETE /api/user/:userId - Delete a user (self or admin)
 router.delete('/:userId', authenticateToken, userController.deleteUser);
 
-//get logged in user details
+// GET /api/user/me - Logged-in user profile
 router.get('/me', authenticateToken, userController.getLoggedInUser);
+
+// PUT /api/user/me/password - Logged-in user changes password (current + new)
+router.put(
+  '/me/password',
+  authenticateToken,
+  validate(userPasswordSchema, 'body'),
+  userController.updateLoggedInUserPassword,
+);
 
 module.exports = router;

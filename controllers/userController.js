@@ -2,6 +2,7 @@ const {
   getAllUsersService,
   createUserService,
   changePasswordService,
+  updateLoggedInUserPasswordService,
   deleteUserService,
   updateUserService,
   getLoggedInUserService,
@@ -151,10 +152,33 @@ const getLoggedInUser = async (req, res, next) => {
   }
 };
 
+/**
+ * Changes password for the authenticated user using current and new passwords.
+ */
+const updateLoggedInUserPassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    await updateLoggedInUserPasswordService({
+      userId: req.user.userId,
+      currentPassword,
+      newPassword,
+    });
+    res.json({ success: true, message: 'Password changed successfully' });
+  } catch (err) {
+    if (err.statusCode) {
+      return res
+        .status(err.statusCode)
+        .json({ success: false, message: err.message });
+    }
+    next(err);
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
   changePassword,
+  updateLoggedInUserPassword,
   updateUser,
   deleteUser,
   getLoggedInUser,

@@ -85,6 +85,40 @@ const changePasswordService = async ({ userId, newPassword }) => {
   return { message: 'Password changed successfully' };
 };
 
+/**
+ * Updates password for the authenticated user after verifying the current password.
+ * @param {{ userId: number, currentPassword: string, newPassword: string }} params
+ */
+const updateLoggedInUserPasswordService = async ({
+  userId,
+  currentPassword,
+  newPassword,
+}) => {
+  const user = await User.findByPk(userId);
+  if (!user) {
+    const error = new Error('User not found');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (!user.password) {
+    const error = new Error('No password set for this account');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const isCurrentValid = await bcrypt.compare(currentPassword, user.password);
+  if (!isCurrentValid) {
+    const error = new Error('Current password is incorrect');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+  return { message: 'Password changed successfully' };
+};
+
 const updateUserService = async ({
   name,
   userId,
@@ -195,6 +229,7 @@ module.exports = {
   createUserService,
   getAllUsersService,
   changePasswordService,
+  updateLoggedInUserPasswordService,
   updateUserService,
   deleteUserService,
   getLoggedInUserService,
