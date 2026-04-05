@@ -20,7 +20,13 @@ router.put(
   userController.changePassword,
 );
 
+// PUT /api/user/:userId - Update user status and author profile (self or admin)
+router.put('/:userId', authenticateToken, userController.updateUser);
+
 // DELETE /api/user/:userId - Delete a user (self or admin)
 router.delete('/:userId', authenticateToken, userController.deleteUser);
+
+//get logged in user details
+router.get('/me', authenticateToken, userController.getLoggedInUser);
 
 module.exports = router;

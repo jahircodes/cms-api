@@ -9,7 +9,9 @@ const createCategoryService = async ({
 }) => {
   const existing = await Category.findOne({ where: { slug } });
   if (existing) {
-    throw new Error('Slug already in use');
+    const error = new Error('Slug already in use');
+    error.statusCode = 409;
+    throw error;
   }
 
   await Category.create({
@@ -31,20 +33,32 @@ const getAllCategoriesService = async () => {
 
 const getCategoryByIdService = async (id) => {
   const category = await Category.findByPk(id);
-  if (!category) throw new Error('Category not found');
+  if (!category) {
+    const error = new Error('Category not found');
+    error.statusCode = 404;
+    throw error;
+  }
   return category;
 };
 
 const updateCategoryService = async (id, data) => {
   const category = await Category.findByPk(id);
-  if (!category) throw new Error('Category not found');
+  if (!category) {
+    const error = new Error('Category not found');
+    error.statusCode = 404;
+    throw error;
+  }
 
   // prevent slug collisions
   if (data.slug) {
     const existing = await Category.findOne({
       where: { slug: data.slug, id: { [Category.sequelize.Op.ne]: id } },
     });
-    if (existing) throw new Error('Slug already in use');
+    if (existing) {
+      const error = new Error('Slug already in use');
+      error.statusCode = 409;
+      throw error;
+    }
   }
 
   await category.update(data);
@@ -53,10 +67,14 @@ const updateCategoryService = async (id, data) => {
 
 const deleteCategoryService = async (id) => {
   const category = await Category.findByPk(id);
-  if (!category) throw new Error('Category not found');
+  if (!category) {
+    const error = new Error('Category not found');
+    error.statusCode = 404;
+    throw error;
+  }
 
   await category.destroy();
-  return { message: 'Category deleted' };
+  return { message: 'Category deleted successfully' };
 };
 
 module.exports = {

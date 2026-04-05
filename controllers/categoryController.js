@@ -12,8 +12,10 @@ const createCategory = async (req, res, next) => {
     const result = await createCategoryService(payload);
     res.status(201).json({ success: true, message: result.message });
   } catch (err) {
-    if (err.message === 'Slug already in use') {
-      return res.status(409).json({ success: false, message: err.message });
+    if (err.statusCode) {
+      return res
+        .status(err.statusCode)
+        .json({ success: false, message: err.message });
     }
     next(err);
   }
@@ -34,8 +36,10 @@ const getCategory = async (req, res, next) => {
     const category = await getCategoryByIdService(id);
     res.json({ success: true, data: category });
   } catch (err) {
-    if (err.message === 'Category not found') {
-      return res.status(404).json({ success: false, message: err.message });
+    if (err.statusCode) {
+      return res
+        .status(err.statusCode)
+        .json({ success: false, message: err.message });
     }
     next(err);
   }
@@ -48,12 +52,12 @@ const updateCategory = async (req, res, next) => {
     const result = await updateCategoryService(id, payload);
     res.json({ success: true, message: result.message });
   } catch (err) {
-    if (err.message === 'Category not found') {
-      return res.status(404).json({ success: false, message: err.message });
+    if (err.statusCode) {
+      return res
+        .status(err.statusCode)
+        .json({ success: false, message: err.message });
     }
-    if (err.message === 'Slug already in use') {
-      return res.status(409).json({ success: false, message: err.message });
-    }
+
     next(err);
   }
 };
@@ -64,8 +68,10 @@ const deleteCategory = async (req, res, next) => {
     const result = await deleteCategoryService(id);
     res.json({ success: true, message: result.message });
   } catch (err) {
-    if (err.message === 'Category not found') {
-      return res.status(404).json({ success: false, message: err.message });
+    if (err.statusCode) {
+      return res
+        .status(err.statusCode)
+        .json({ success: false, message: err.message });
     }
     next(err);
   }
