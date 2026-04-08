@@ -60,6 +60,7 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.RefreshToken, { foreignKey: 'userId' });
     User.hasOne(models.AuthorProfile, { foreignKey: 'userId' });
     User.hasMany(models.AuthorSocialLink, { foreignKey: 'userId' });
+    User.hasMany(models.Post, { foreignKey: 'userId' });
   };
 
   return User;

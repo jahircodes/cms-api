@@ -48,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       as: 'parent',
       foreignKey: 'parentId',
     });
+    Category.hasMany(models.Post, { foreignKey: 'categoryId' });
   };
 
   return Category;

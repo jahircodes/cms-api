@@ -41,8 +41,8 @@ build/
 .env
 .env.*
 
-# Sequelize CLI migrations and seeders logs
-.sequelize*
+# Sequelize CLI local state (not project config)
+.sequelize/
 
 # OS generated files
 .DS_Store
