@@ -33,16 +33,20 @@ function validate(schema, source) {
 
     const { error, value } = schema.validate(req[actualSource], {
       stripUnknown: true,
+      abortEarly: false,
     });
     if (error) {
-      return res
-        .status(400)
-        .json({ success: false, message: error.details[0].message });
+      return res.status(400).json({
+        success: false,
+        message: error.details.map((d) => d.message).join('; '),
+      });
     }
 
-    // Express 5: req.query is read-only; assign coerced defaults on validatedQuery.
+    // Express 5: req.query and req.params are read-only; use validated* copies.
     if (actualSource === 'query') {
       req.validatedQuery = value;
+    } else if (actualSource === 'params') {
+      req.validatedParams = value;
     } else {
       req[actualSource] = value;
     }

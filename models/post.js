@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
         allowNull: false,
         unique: true,
-        comment: 'URL-safe unique identifier for the post.',
+        comment: 'URL-safe unique identifier (set by client).',
       },
 
       contentJson: {

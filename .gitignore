@@ -44,6 +44,10 @@ build/
 # Sequelize CLI local state (not project config)
 .sequelize/
 
+# Uploaded media (keep directory via uploads/.gitkeep)
+uploads/*
+!uploads/.gitkeep
+
 # OS generated files
 .DS_Store
 Thumbs.db
